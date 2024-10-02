@@ -7,9 +7,9 @@
           <!-- 링크 카드가 있을 경우 출력 -->
           <div v-if="message.links" class="links-container">
             <div v-for="link in message.links" :key="link.url" class="link-card">
-              <h5>{{ link.title }}</h5>
-              <p>{{ link.description }}</p>
-              <a :href="link.url" target="_blank" class="btn btn-primary">View More</a>
+              <h5>{{ link.title }}</h5> <!-- Title을 출력 -->
+              <p>{{ link.description }}</p> <!-- Description을 출력 -->
+              <a :href="link.url" target="_blank" class="view-more-btn">View More</a>
             </div>
           </div>
         </div>
@@ -59,10 +59,8 @@ export default {
       }
     },
     getBotResponse(query) {
-      // 입력된 키워드와 일치하는 데이터를 찾습니다.
       const response = exampleData.find(item => query.toLowerCase().includes(item.keyword.toLowerCase()));
       if (response) {
-        // 응답과 링크를 함께 출력합니다.
         this.messages.push({ sender: 'bot', text: response.response, links: response.links });
       } else {
         this.messages.push({ sender: 'bot', text: 'No relevant information found.' });
@@ -83,12 +81,14 @@ export default {
     },
     adjustTextareaHeight() {
       const textarea = this.$refs.textarea;
-      textarea.style.height = 'auto'; // 입력할 때마다 높이 초기화
-      textarea.style.height = `${textarea.scrollHeight}px`; // 입력에 따라 높이 조정
+      textarea.style.height = '40px'; // 입력창의 기본 높이를 유지
+      if (textarea.scrollHeight > 40) { // 높이가 기본값보다 커질 경우에만 늘림
+        textarea.style.height = `${textarea.scrollHeight}px`; // 입력 내용에 따라 높이 조정
+      }
     },
     resetTextareaHeight() {
       const textarea = this.$refs.textarea;
-      textarea.style.height = 'auto'; // 메시지 전송 후 높이를 다시 기본값으로 리셋
+      textarea.style.height = '40px'; // 메시지 전송 후 높이를 다시 기본값으로 리셋
     }
   }
 };
@@ -164,46 +164,6 @@ body, html {
   margin-bottom: 5px;
 }
 
-.links-container {
-  display: flex;
-  flex-wrap: wrap;
-  margin-top: 10px;
-}
-
-.link-card {
-  background: #fff;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  padding: 15px;
-  margin: 5px;
-  width: calc(50% - 20px);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  transition: transform 0.2s ease-in-out;
-}
-
-.link-card:hover {
-  transform: translateY(-5px);
-}
-
-.link-card h5 {
-  font-size: 16px;
-  margin: 0 0 10px;
-}
-
-.link-card p {
-  font-size: 14px;
-  color: #555;
-}
-
-.link-card a {
-  text-decoration: none;
-  color: white;
-  background-color: #8b0029;
-  padding: 5px 10px;
-  border-radius: 3px;
-  display: inline-block;
-}
-
 .chat-input-container {
   background-color: #f0f0f0;
   width: 100%;
@@ -233,6 +193,7 @@ body, html {
   height: 40px; /* 기본 높이 설정 */
   max-height: 150px; /* 최대 높이 설정 */
   overflow-y: auto; /* 내용이 많아지면 스크롤 가능 */
+  transition: height 0.2s ease-in-out; /* 높이 변화에 애니메이션 추가 */
 }
 
 .icon-btn {
